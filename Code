@@ -1,0 +1,286 @@
+# Configurar el uso de la GPU
+from tensorflow.python.client import device_lib
+import tensorflow as tf
+print("Num disp: ",len(tf.config.list_physical_devices('GPU')))
+
+from google.colab import drive
+drive.mount('/content/drive')
+!pip install gdown
+!pip install gdown
+!pip install pyunpack
+!apt-get install unrar
+!pip install patool
+
+import tensorflow as tf
+from tqdm import tqdm
+import numpy as np
+import cv2
+import pandas as pd
+from sklearn.model_selection import train_test_split
+with tf.device('/device:GPU:0'):
+  class FrameGenerator:
+      def __init__(self, video_dir, csv_file, n_frames):
+          self.video_dir = video_dir
+          self.csv_file = csv_file
+          self.n_frames = n_frames
+          self.class_names = self.load_class_names()
+          self.class_ids_for_name = {name: i for i, name in enumerate(self.class_names)}
+
+      def load_class_names(self):
+          df = pd.read_csv(self.csv_file)
+          return df['LABEL'].unique().tolist()
+
+      def get_files_and_class_names(self):
+          video_paths = []
+          classes = []
+
+          df = pd.read_csv(self.csv_file)
+          for _, row in df.iterrows():
+              video_name = row['NOMBRE_ARCHIVO']
+              class_name = row['LABEL']
+              video_path = f'{self.video_dir}/{video_name}'
+              video_paths.append(video_path)
+              classes.append(class_name)
+
+          return video_paths, classes
+
+      def frames_from_video_file(self, video_path, n_frames, output_size=(224, 224)):
+          src = cv2.VideoCapture(video_path)
+          video_length = int(src.get(cv2.CAP_PROP_FRAME_COUNT))
+          frames = []
+
+          if video_length < n_frames:
+              print("Skipping video: Insufficient frames")
+              return None
+
+          frame_indices = np.linspace(0, video_length - 1, n_frames, dtype=int)
+          for index in frame_indices:
+              src.set(cv2.CAP_PROP_POS_FRAMES, index)
+              ret, frame = src.read()
+              if not ret:
+                  print("Error reading frame")
+                  return None
+              frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+              frame = self.format_frame(frame, output_size)
+              frames.append(frame)
+
+          src.release()
+
+          # Stack frames into a 4D array
+          frames = np.stack(frames)
+
+          return frames
+
+      def process_videos(self, video_paths, classes):
+          for path, label in tqdm(zip(video_paths, classes), total=len(video_paths)):
+              frames = self.frames_from_video_file(path, self.n_frames)
+              if frames is not None:
+                  yield frames, self.class_ids_for_name[label]
+
+      def get_data(self):
+          video_paths, classes = self.get_files_and_class_names()
+          return self.process_videos(video_paths, classes)
+
+      def format_frame(self, frame, output_size):
+          frame = cv2.resize(frame, output_size)
+          frame = frame / 255.0  # Normalize the pixel values between 0 and 1
+          return frame
+          
+import gdown
+import os
+from pyunpack import Archive
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+from tqdm import tqdm
+import gdown
+import os
+from pyunpack import Archive
+
+# URL del archivo CSV en Google Drive
+csv_url = "https://drive.google.com/uc?id=1xZ2AVOb6Pii7sxTRtmIL0zeyIuxoI7p7"
+
+# URL del archivo RAR en Google Drive
+rar_url = "https://drive.google.com/uc?id=11x1Evli8Zsg2-NiV3otZvIudoYg0f8Gv"
+
+# Nombres de los archivos a descargar
+csv_filename = "MP4VIDEOS.csv"
+rar_filename = "VIDEOS_PIEL_NUEVO.rar"
+
+# Descargar el archivo CSV
+gdown.download(csv_url, csv_filename, quiet=False)
+
+# Descargar el archivo RAR
+gdown.download(rar_url, rar_filename, quiet=False)
+
+# Crear el directorio de destino
+output_directory = "VIDEOS_PIEL_NUEVO"
+os.makedirs(output_directory, exist_ok=True)
+
+# Descomprimir el archivo RAR
+Archive(rar_filename).extractall(output_directory)
+
+# Cargar el archivo CSV
+csv_path = os.path.join(".", csv_filename)
+
+# Cargar el archivo CSV
+pathcolab_csv="/content/MP4VIDEOS.csv"
+pathcolab_carpeta="/content/VIDEOS_PIEL_NUEVO/VIDEOS_PIEL_NUEVO"
+df = pd.read_csv(pathcolab_csv)
+
+# Crear instancias de FrameGenerator para cada conjunto de datos
+train_fg = FrameGenerator(pathcolab_carpeta, "train.csv", n_frames=30)
+val_fg = FrameGenerator(pathcolab_carpeta, "val.csv", n_frames=30)
+test_fg = FrameGenerator(pathcolab_carpeta, "test.csv", n_frames=30)
+
+# Crear instancias de FrameGenerator para cada conjunto de datos
+train_fg = FrameGenerator(pathcolab_carpeta, "train.csv", n_frames=30)
+val_fg = FrameGenerator(pathcolab_carpeta, "val.csv", n_frames=30)
+test_fg = FrameGenerator(pathcolab_carpeta, "test.csv", n_frames=30)
+
+with tf.device('/device:GPU:0'):
+# Configurar el tamaño de los lotes
+  batch_size = 4
+
+  width = 224
+  height = 224
+  channels = 3  # Para imágenes en color
+  num_classes = len(train_fg.class_names)
+  n_frames = train_fg.n_frames
+
+# Generar fotogramas y etiquetas para todo el conjunto de datos de entrenamiento
+  train_dataset = tf.data.Dataset.from_generator(
+      lambda: train_fg.get_data(),
+      output_signature=(
+          tf.TensorSpec(shape=(n_frames, width, height, channels), dtype=tf.float32),
+          tf.TensorSpec(shape=(), dtype=tf.int32)
+    )
+)
+  train_dataset = train_dataset.batch(batch_size)
+
+# Generar fotogramas y etiquetas para todo el conjunto de datos de validación
+  val_dataset = tf.data.Dataset.from_generator(
+      lambda: val_fg.get_data(),
+      output_signature=(
+          tf.TensorSpec(shape=(n_frames, width, height, channels), dtype=tf.float32),
+          tf.TensorSpec(shape=(), dtype=tf.int32)
+    )
+)
+  val_dataset = val_dataset.batch(batch_size)
+
+# Generar fotogramas y etiquetas para todo el conjunto de datos de prueba
+  test_dataset = tf.data.Dataset.from_generator(
+      lambda: test_fg.get_data(),
+      output_signature=(
+          tf.TensorSpec(shape=(n_frames, width, height, channels), dtype=tf.float32),
+          tf.TensorSpec(shape=(), dtype=tf.int32)
+    )
+)
+  test_dataset = test_dataset.batch(batch_size)
+ 
+ 
+# Definir el modelo
+with tf.device('/device:GPU:0'):
+
+  def get_model(width, height, channels, frames, num_classes):
+    inputs = tf.keras.Input((frames, width, height, channels))
+    x = tf.keras.layers.Conv3D(filters=64, kernel_size=3, activation="relu")(inputs)
+    x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.MaxPool3D(pool_size=(1, 2, 2))(x)
+
+    x = tf.keras.layers.Conv3D(filters=128, kernel_size=3, activation="relu")(x)
+    x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.MaxPool3D(pool_size=(1, 2, 2))(x)
+
+    x = tf.keras.layers.Conv3D(filters=256, kernel_size=3, activation="relu")(x)
+    x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.MaxPool3D(pool_size=(1, 2, 2))(x)
+
+    x = tf.keras.layers.Conv3D(filters=512, kernel_size=3, activation="relu")(x)
+    x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.MaxPool3D(pool_size=(1, 2, 2))(x)
+
+    x = tf.keras.layers.GlobalAveragePooling3D()(x)
+    x = tf.keras.layers.Dense(units=512, activation="relu")(x)
+    x = tf.keras.layers.Dropout(0.5)(x)
+
+    outputs = tf.keras.layers.Dense(units=num_classes, activation="softmax")(x)
+
+    model = tf.keras.Model(inputs, outputs, name="3dcnn")
+    return model
+    
+import tensorflow as tf
+from tensorflow.keras.callbacks import ModelCheckpoint
+
+# Crear el modelo
+with tf.device('/device:GPU:0'):
+    model = get_model(width, height, channels, n_frames, num_classes)
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Definir el directorio de destino para guardar los modelos
+checkpoint_dir = "saved_models/"
+
+# Crear el callback ModelCheckpoint
+checkpoint_callback = ModelCheckpoint(
+    filepath=checkpoint_dir + "EPOCA_FINALIZADA_{epoch:02d}.h5",
+    save_best_only=False,
+    monitor='val_accuracy',
+    mode='max',
+    verbose=2
+)
+
+# Entrenamiento del modelo
+epochs = 5
+
+for epoch in range(epochs):
+    # Entrenamiento del modelo
+    model.fit(
+        train_dataset,
+        validation_data=val_dataset,
+        epochs=1,
+        callbacks=[checkpoint_callback],
+        verbose=2)
+
+    # Evaluación del modelo en el conjunto de prueba
+    test_results = model.evaluate(test_dataset)
+    test_accuracy = test_results[1]  # Acceder al accuracy de test
+    print("Test Accuracy after Epoch", epoch+1, ":", test_accuracy)
+
+# Evaluación del modelo en el conjunto de prueba
+model.evaluate(test_dataset)
+
+import tensorflow as tf
+from tensorflow.keras.callbacks import ModelCheckpoint
+
+# Crear el modelo
+with tf.device('/device:GPU:0'):
+    model =  tf.keras.models.load_model('/content/EPOCA_FINALIZADA_05.h5')
+
+# Definir el directorio de destino para guardar los modelos
+checkpoint_dir = "saved_models/"
+
+# Entrenamiento del modelo
+epochs = 5
+with tf.device('/device:GPU:0'):
+    for epoch in range(epochs):
+      # Definir el directorio de destino para guardar los modelos
+        #checkpoint_dir = "saved_models/"
+        checkpoint_callback = ModelCheckpoint(
+            filepath=checkpoint_dir + "SEGUNDO_MODELO_NUEVO_{epoch:02d}.h5",
+            save_best_only=False,
+            monitor='val_accuracy',
+            mode='max',
+            verbose=2
+            )
+    # Entrenamiento del modelo
+        model.fit(
+            train_dataset,
+            validation_data=val_dataset,
+            epochs=1,
+            callbacks=[checkpoint_callback],
+            verbose=2
+            )
+ # Evaluación del modelo en el conjunto de prueba
+        test_results = model.evaluate(test_dataset)
+        test_accuracy = test_results[1]  # Acceder al accuracy de test
+        print("Test Accuracy after Epoch", epoch+1, ":", test_accuracy)
