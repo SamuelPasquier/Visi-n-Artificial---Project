@@ -1,0 +1,1380 @@
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'AUMENTAR'  # Directorio de los videos originales
+output_dir = 'AUMENTAR'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'AVANZAR'  # Directorio de los videos originales
+output_dir = 'AVANZAR'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'BUENASNOCHES'  # Directorio de los videos originales
+output_dir = 'BUENASNOCHES'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'BUENASTARDES'  # Directorio de los videos originales
+output_dir = 'BUENASTARDES'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'BUENOSDIAS'  # Directorio de los videos originales
+output_dir = 'BUENOSDIAS'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'CHAU'  # Directorio de los videos originales
+output_dir = 'CHAU'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'CONTINUAR'  # Directorio de los videos originales
+output_dir = 'CONTINUAR'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'CUAL'  # Directorio de los videos originales
+output_dir = 'CUAL'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'CUANDO'  # Directorio de los videos originales
+output_dir = 'CUANDO'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'CUANTOS'  # Directorio de los videos originales
+output_dir = 'CUANTOS'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'DERECHA'  # Directorio de los videos originales
+output_dir = 'DERECHA'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'DISMINUIR'  # Directorio de los videos originales
+output_dir = 'DISMINUIR'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'HOLA'  # Directorio de los videos originales
+output_dir = 'HOLA'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'IZQUIERDA'  # Directorio de los videos originales
+output_dir = 'IZQUIERDA'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'NO'  # Directorio de los videos originales
+output_dir = 'NO'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'PARAQUE'  # Directorio de los videos originales
+output_dir = 'PARAQUE'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'PORQUE'  # Directorio de los videos originales
+output_dir = 'PORQUE'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'QUE'  # Directorio de los videos originales
+output_dir = 'QUE'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'SI'  # Directorio de los videos originales
+output_dir = 'SI'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
+import cv2
+import os
+import numpy as np
+
+
+video_dir = 'SUSPENDER'  # Directorio de los videos originales
+output_dir = 'SUSPENDER'  # Directorio de salida para los videos generados
+start_index = 161  # Índice inicial para el nombre de los videos generados
+
+# Obtener la lista de videos en el directorio
+video_files = os.listdir(video_dir)
+#obtener nombre de la carpeta
+file_name = os.path.basename(video_dir)
+print (file_name)
+aux="aug"
+
+# Recorrer cada video
+for video_file in video_files:
+    # Obtener el nombre y la extensión del archivo
+    video_name, extension = os.path.splitext(video_file)
+
+    # Ruta completa del video de entrada
+    input_video_path = os.path.join(video_dir, video_file)
+
+    # Leer el video original
+    cap = cv2.VideoCapture(input_video_path)
+
+    # Obtener la cantidad de cuadros en el video original
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Crear los nombres de los videos generados
+    output_video_name1 = f'{file_name}{start_index}{aux}{extension}'
+    output_video_name2 = f'{file_name}{start_index + 1}{aux}{extension}'
+
+    # Rutas completas de los videos generados
+    output_video_path1 = os.path.join(output_dir, output_video_name1)
+    output_video_path2 = os.path.join(output_dir, output_video_name2)
+
+    # Crear el objeto VideoWriter para el primer video generado
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out1 = cv2.VideoWriter(output_video_path1, fourcc, 30.0, (128, 128))
+
+    # Crear el objeto VideoWriter para el segundo video generado
+    out2 = cv2.VideoWriter(output_video_path2, fourcc, 30.0, (128, 128))
+
+    # Leer cada cuadro del video original y aplicar las transformaciones
+    for frame_index in range(num_frames):
+        ret, frame = cap.read()
+
+        # Aplicar la función cv2.rotate() al primer video generado
+        M1 = np.float32([[1, 0, 50], [0, 1, 0]])
+        translated_frame = cv2.warpAffine(frame, M1, (frame.shape[1], frame.shape[0]))
+        #rotated_frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
+        # Aplicar la función cv2.warpAffine() al segundo video generado
+        M = cv2.getRotationMatrix2D((128 / 2, 128 / 2), 30, 1)
+        warped_frame = cv2.warpAffine(frame, M, (128, 128))
+
+        # Escribir los cuadros en los videos generados
+        out1.write(translated_frame)
+        out2.write(warped_frame)
+
+    # Liberar los recursos
+    cap.release()
+    out1.release()
+    out2.release()
+
+    # Aumentar el índice para el siguiente par de videos generados
+    start_index += 2
