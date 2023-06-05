@@ -1,0 +1,287 @@
+# Configurar el uso de la GPU
+from tensorflow.python.client import device_lib
+import tensorflow as tf
+print("Num disp: ",len(tf.config.list_physical_devices('GPU')))
+
+!pip install PyDrive
+!pip install rarfile
+!pip install pyunpack
+!pip install patool
+
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from google.colab import auth
+
+# Autenticación
+auth.authenticate_user()
+gauth = GoogleAuth()
+gauth.credentials = gauth.credentials
+drive = GoogleDrive(gauth)
+
+import os
+from rarfile import RarFile
+import gdown
+import os
+from tqdm import tqdm
+from pyunpack import Archive
+import gdown
+import rarfile
+
+# URL del archivo RAR de la carpeta TRAINDS en Google Drive
+train_url = "https://drive.google.com/uc?id=1akgxfgqHb5LxJeSK3rui7mZ3vCMxVdsB"
+train_filename = "/content/TRAINDATAAUG.rar"
+
+
+# URL del archivo RAR de la carpeta VALDS en Google Drive
+val_url = "https://drive.google.com/uc?id=1jlVc5SczpA3ETD-K3Oti3iPWjn0U9pwl"
+val_filename = "/content/VALDATAAUG.rar"
+
+# Descargar archivo RAR de la carpeta TRAINDS
+gdown.download(train_url, train_filename, quiet=False)
+
+# Descargar archivo RAR de la carpeta VALDS
+gdown.download(val_url, val_filename, quiet=False)
+
+try:
+    with rarfile.RarFile(train_filename, 'r') as rf:
+        # Archivo RAR válido, no se produjo un error al abrirlo
+        print("El archivo TRAINDS.rar es válido.")
+except rarfile.Error as e:
+    # Se produjo un error al abrir el archivo RAR
+    print("El archivo TRAINDS.rar no es válido:", e)
+
+try:
+    with rarfile.RarFile(val_filename, 'r') as rf:
+        # Archivo RAR válido, no se produjo un error al abrirlo
+        print("El archivo VALDS.rar es válido.")
+except rarfile.Error as e:
+    # Se produjo un error al abrir el archivo RAR
+    print("El archivo VALDS.rar no es válido:", e)
+
+# Crear el directorio de destino
+output_directory = "TRAINDATA"
+os.makedirs(output_directory, exist_ok=True)
+
+# Descomprimir el archivo RAR
+Archive(train_filename).extractall(output_directory)
+
+# Crear el directorio de destino
+output_directory = "VALDATA"
+os.makedirs(output_directory, exist_ok=True)
+
+# Descomprimir el archivo RAR
+Archive(val_filename).extractall(output_directory)
+# Mostrar frames al azar para verificar que el cargado fue correcto
+import os
+import random
+import cv2
+from matplotlib import pyplot as plt
+
+# Directorio de las subcarpetas de VALDS
+val_dir = "/content/TRAINDATA/TRAINDATAAUG"
+
+# Obtener una subcarpeta al azar
+subfolders = os.listdir(val_dir)
+random_subfolder = random.choice(subfolders)
+subfolder_path = os.path.join(val_dir, random_subfolder)
+
+# Obtener los nombres de los videos en la subcarpeta
+video_files = os.listdir(subfolder_path)
+
+# Elegir dos videos al azar
+random_videos = random.sample(video_files, 2)
+
+# Mostrar el primer frame de los videos seleccionados
+for video_file in random_videos:
+    video_path = os.path.join(subfolder_path, video_file)
+    cap = cv2.VideoCapture(video_path)
+
+    # Leer el primer frame
+    ret, frame = cap.read()
+    print(frame.shape)
+
+    # Mostrar el primer frame como una imagen estática
+    plt.imshow(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+    plt.show()
+
+    # Liberar los recursos
+    cap.release()
+
+import tensorflow as tf
+import numpy as np
+import cv2
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.layers import Conv3D
+
+import os
+import tensorflow as tf
+
+class FrameGenerator:
+    def __init__(self, video_dir, n_frames):
+        self.video_dir = video_dir
+        self.n_frames = n_frames
+        self.class_names = self.load_class_names()
+        self.class_ids_for_name = {name: i for i, name in enumerate(self.class_names)}
+
+    def load_class_names(self):
+        class_names = sorted(next(os.walk(self.video_dir))[1])
+        return class_names
+
+    def frames_from_video_file(self, video_path, n_frames, output_size=(128, 128)):
+        src = cv2.VideoCapture(video_path)
+        video_length = int(src.get(cv2.CAP_PROP_FRAME_COUNT))
+        frames = []
+
+        if video_length < n_frames:
+            print("Skipping video: Insufficient frames")
+            return None
+
+        frame_indices = np.linspace(0, video_length - 1, n_frames, dtype=int)
+        for index in frame_indices:
+            src.set(cv2.CAP_PROP_POS_FRAMES, index)
+            ret, frame = src.read()
+            if not ret:
+                print("Error reading frame")
+                return None
+            #frame = cv2.resize(frame, (128, 128))
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            frame = frame.reshape((*output_size, 1))
+            frames.append(frame)
+
+        src.release()
+
+        # Stack frames into a 4D array
+        frames = np.stack(frames).astype(np.uint8)
+
+        return frames
+
+    def process_videos(self, video_paths, classes):
+        for path, label in zip(video_paths, classes):
+            frames = self.frames_from_video_file(path, self.n_frames)
+            if frames is not None:
+                yield frames, self.class_ids_for_name[label]
+
+    def get_data(self):
+        video_paths = []
+        classes = []
+
+        for class_name in self.class_names:
+            class_dir = os.path.join(self.video_dir, class_name)
+            video_files = os.listdir(class_dir)
+            video_paths.extend([os.path.join(class_dir, video_file) for video_file in video_files])
+            classes.extend([class_name] * len(video_files))
+
+        return self.process_videos(video_paths, classes)
+    def count_samples(self):
+        count = 0
+        for class_name in self.class_names:
+            class_dir = os.path.join(self.video_dir, class_name)
+            count += len(os.listdir(class_dir))
+        return count
+# Configuración de las rutas de los datos
+train_dir = "/content/TRAINDATA/TRAINDATAAUG"  # Carpeta de entrenamiento
+val_dir = "/content/VALDATA/VALDATAAUG"  # Carpeta de validación
+n_frames = 30  # Número de cuadros en cada video
+
+# Crear instancias de FrameGenerator para cada conjunto de datos
+train_fg = FrameGenerator(train_dir, n_frames=n_frames)
+val_fg = FrameGenerator(val_dir, n_frames=n_frames)
+
+# Obtener el número de muestras en el conjunto de datos de entrenamiento y validación
+num_train_samples = train_fg.count_samples()
+num_val_samples = val_fg.count_samples()
+
+print(num_train_samples)
+print(num_val_samples)
+# Configurar el tamaño de los lotes
+batch_size = 132
+width = 128
+height = 128
+channels = 1  # Grayscale
+num_classes = len(train_fg.class_names)
+print(len(train_fg.class_names))
+
+# Generar fotogramas y etiquetas para todo el conjunto de datos de entrenamiento
+train_dataset = tf.data.Dataset.from_generator(
+    train_fg.get_data,
+    output_signature=(
+        tf.TensorSpec(shape=(n_frames, width, height, channels), dtype=tf.uint8),
+        tf.TensorSpec(shape=(), dtype=tf.int32)
+    )
+)
+train_dataset = train_dataset.shuffle(buffer_size=num_train_samples).batch(batch_size)
+train_dataset = train_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+
+# Generar fotogramas y etiquetas para todo el conjunto de datos de validación
+val_dataset = tf.data.Dataset.from_generator(
+    val_fg.get_data,
+    output_signature=(
+        tf.TensorSpec(shape=(n_frames, width, height, channels), dtype=tf.uint8),
+        tf.TensorSpec(shape=(), dtype=tf.int32)
+    )
+)
+val_dataset = val_dataset.shuffle(buffer_size=num_val_samples).batch(batch_size)
+val_dataset = val_dataset.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+
+# Imprimir el número de muestras
+print("Número de muestras de entrenamiento:", num_train_samples)
+print("Número de muestras de validación:", num_val_samples)
+
+print(train_dataset)
+print(val_dataset)
+
+import tensorflow as tf
+import tensorflow_hub as hub
+
+num_classes = 20
+frames = 30  # Número de cuadros en cada video
+
+import tensorflow as tf
+from tensorflow.keras.layers import Conv3D, MaxPooling3D, Flatten, Dense, Dropout
+
+# Definición del modelo
+model = tf.keras.Sequential([
+    # Capa de normalización
+    tf.keras.layers.Rescaling(1./255, input_shape=(frames, 128, 128, 1)),
+    # Capa de convolución 3D
+    Conv3D(2, kernel_size=(3, 3, 1), activation='relu'),
+    MaxPooling3D(pool_size=(2, 2, 1)),
+    # Capa de convolución 3D adicional (opcional)
+    Conv3D(2, kernel_size=(3, 3, 1), activation='relu'),
+    MaxPooling3D(pool_size=(2, 2, 1)),
+    # Capa de aplanamiento
+    Flatten(),
+    # Capas densas
+    Dense(128, activation='relu'),
+    Dropout(0.5),
+    Dense(64, activation='relu'),
+    Dropout(0.5),
+    #Dense(64, activation='relu'),
+    #Dropout(0.5),
+    # Capa de salida con activación softmax para la clasificación
+    Dense(num_classes, activation='softmax')
+])
+
+
+
+# Compilar el modelo
+model.compile(
+    optimizer='adam',
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
+    metrics=['accuracy']
+)
+
+# Definir el callback de guardado del modelo
+checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath='modelo_128PIX{epoch}.h5',  # Nombre del archivo de guardado con número de época
+    save_best_only=False,  # Guardar el modelo después de cada época
+    save_weights_only=False,  # Guardar el modelo completo (arquitectura y pesos)
+    monitor='val_loss',  # Métrica a monitorear para decidir si guardar el modelo
+    mode='auto',  # Modo automático para decidir si guardar el modelo según la métrica
+    verbose=2  # Mostrar mensajes de progreso durante el guardado
+)
+
+# Entrenar el modelo con el callback de guardado del modelo
+model.fit(train_dataset, epochs=3, validation_data=val_dataset, callbacks=[checkpoint_callback])
