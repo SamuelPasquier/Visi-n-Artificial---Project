@@ -1,0 +1,225 @@
+import os
+import glob
+import tensorflow as tf
+import cv2
+import numpy as np
+
+def apply_canny_edge_filter(frame):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # kernel = np.ones((3, 3), np.uint8)
+    edges = cv2.Canny(gray, 10, 200)
+    # edges = cv2.dilate(edges, kernel, iterations=1)
+    # edges = cv2.erode(edges, kernel, iterations=2)
+    frame_edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+    return frame_edges
+
+def preprocess_video(input_video_path, output_video_path, target_resolution=(480, 480), target_frames=90):
+    video = cv2.VideoCapture(input_video_path)
+    frames_total = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+    fps = video.get(cv2.CAP_PROP_FPS)
+    sampling_interval = max(frames_total // target_frames, 1)
+    selected_frames = []
+
+    for frame_idx in range(frames_total):
+        ret, frame = video.read()
+
+        if frame_idx % sampling_interval == 0:
+            frame = cv2.resize(frame, target_resolution)
+            # frame = segmentar_piel(frame)
+            frame = apply_canny_edge_filter(frame)
+            frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            selected_frames.append(frame_gray)
+
+    video.release()
+    selected_frames = np.array(selected_frames)
+
+    if selected_frames.shape[0] < target_frames:
+        padding_frames = np.repeat(selected_frames[-1:], target_frames - selected_frames.shape[0], axis=0)
+        selected_frames = np.concatenate([selected_frames, padding_frames], axis=0)
+    else:
+        selected_frames = selected_frames[:target_frames]
+
+    dataset = tf.data.Dataset.from_tensor_slices(selected_frames)
+
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_video = cv2.VideoWriter(output_video_path, fourcc, fps, target_resolution, isColor=False)
+
+    for frame in dataset:
+        frame = frame.numpy().astype(np.uint8)
+        output_video.write(frame)
+
+    output_video.release()
+
+
+
+
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\DERECHA"
+output_folder_path = "DERECHA_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\DISMINUIR"
+output_folder_path = "DISMINUIR_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\HOLA"
+output_folder_path = "HOLA_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\IZQUIERDA"
+output_folder_path = "IZQUIERDA_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = r"CARPETAS_VIDEOS_PIEL\NO"
+output_folder_path = "NO_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\PARAQUE"
+output_folder_path = "PARAQUE_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\PORQUE"
+output_folder_path = "PORQUE_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\QUE"
+output_folder_path = "QUE_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\SI"
+output_folder_path = "SI_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
+# Ruta de la carpeta de entrada y salida
+input_folder_path = "CARPETAS_VIDEOS_PIEL\SUSPENDER"
+output_folder_path = "SUSPENDER_CANNY"
+
+# Obtener la lista de archivos de video en la carpeta de entrada
+video_files = glob.glob(os.path.join(input_folder_path, "*.mp4"))
+
+# Iterar sobre cada archivo de video
+for index, video_file in enumerate(video_files):
+    # Obtener el nombre de la carpeta
+    folder_name = os.path.basename(input_folder_path)
+    # Generar el nombre de salida
+    output_video_name = f"{folder_name}{str(index+1).zfill(3)}.mp4"
+    output_video_path = os.path.join(output_folder_path, output_video_name)
+
+    # Aplicar el código a cada video y guardar el resultado
+    preprocess_video(video_file, output_video_path)
